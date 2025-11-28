@@ -202,9 +202,11 @@ def draw_view_time(disp, font_large, font_medium, font_small):
     
     # Mini weather preview if available
     if weather_data:
-        temp_text = f"{weather_data['temp']:.0f}°C"
-        draw.text((10, 240), temp_text, fill=COLOR_LIGHT_BLUE, font=font_medium)
-        draw.text((80, 240), weather_data['condition'], fill=COLOR_LIGHT_BLUE, font=font_small)
+        temp_c = weather_data['temp']
+        temp_f = temp_c * 9/5 + 32
+        temp_text = f"{temp_f:.0f}°F / {temp_c:.0f}°C"
+        draw.text((10, 240), temp_text, fill=COLOR_LIGHT_BLUE, font=font_small)
+        draw.text((10, 260), weather_data['condition'], fill=COLOR_LIGHT_BLUE, font=font_small)
     
     return image
 
@@ -225,24 +227,32 @@ def draw_view_weather(disp, font_large, font_medium, font_small):
         draw.text((10, 110), "and connection", fill=COLOR_RED, font=font_small)
         return image
     
-    # Temperature - Large
-    temp_text = f"{weather_data['temp']:.1f}°"
+    # Temperature - Large (show both F and C)
+    temp_c = weather_data['temp']
+    temp_f = temp_c * 9/5 + 32
+    temp_text = f"{temp_f:.0f}°F"
     draw.text((10, 40), temp_text, fill=COLOR_ORANGE, font=font_large)
+    
+    # Celsius below
+    temp_c_text = f"{temp_c:.0f}°C"
+    draw.text((10, 85), temp_c_text, fill=COLOR_GRAY, font=font_medium)
     
     # Condition
     condition_text = weather_data['condition']
-    draw.text((10, 95), condition_text, fill=COLOR_WHITE, font=font_medium)
+    draw.text((10, 115), condition_text, fill=COLOR_WHITE, font=font_medium)
     
     # Description
     desc_text = weather_data['description'].title()
-    draw.text((10, 125), desc_text, fill=COLOR_GRAY, font=font_small)
+    draw.text((10, 145), desc_text, fill=COLOR_GRAY, font=font_small)
     
     # Details box
-    y_offset = 160
+    y_offset = 180
     draw.text((10, y_offset), "Details:", fill=COLOR_LIGHT_BLUE, font=font_small)
     
     y_offset += 25
-    feels_text = f"Feels like: {weather_data['feels_like']:.1f}°C"
+    feels_c = weather_data['feels_like']
+    feels_f = feels_c * 9/5 + 32
+    feels_text = f"Feels: {feels_f:.0f}°F / {feels_c:.0f}°C"
     draw.text((10, y_offset), feels_text, fill=COLOR_WHITE, font=font_small)
     
     y_offset += 20
