@@ -349,8 +349,7 @@ def main():
             font_path = os.path.join(os.path.dirname(__file__), 'Font/Font01.ttf')
             font_large = ImageFont.truetype(font_path, 40)
             font_medium = ImageFont.truetype(font_path, 22)
-            font_small = ImageFont.truetype(font_path, 16))
-            font_small = ImageFont.truetype("../Font/Font01.ttf", 16)
+            font_small = ImageFont.truetype(font_path, 16)
         except:
             logging.warning("Could not load custom fonts, using default")
             font_large = ImageFont.load_default()
