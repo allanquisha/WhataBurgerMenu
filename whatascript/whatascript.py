@@ -331,28 +331,33 @@ def draw_view_calendar(disp, font_large, font_medium, font_small):
     draw = ImageDraw.Draw(image)
     now = datetime.now()
     
+    # Margins
+    left_margin = 15
+    right_margin = 15
+    
     # Header
-    draw.text((10, 10), "UPCOMING EVENTS", fill=COLOR_GRAY, font=font_small)
+    draw.text((left_margin, 10), "UPCOMING EVENTS", fill=COLOR_GRAY, font=font_small)
     
     if not APPLE_CALENDAR_URL:
-        draw.text((10, 50), "Calendar not", fill=COLOR_RED, font=font_medium)
-        draw.text((10, 75), "configured", fill=COLOR_RED, font=font_medium)
-        draw.text((10, 110), "Add your iCloud", fill=COLOR_GRAY, font=font_small)
-        draw.text((10, 130), "calendar URL in", fill=COLOR_GRAY, font=font_small)
-        draw.text((10, 150), "the script config", fill=COLOR_GRAY, font=font_small)
+        draw.text((left_margin, 50), "Calendar not", fill=COLOR_RED, font=font_medium)
+        draw.text((left_margin, 75), "configured", fill=COLOR_RED, font=font_medium)
+        draw.text((left_margin, 110), "Add your iCloud", fill=COLOR_GRAY, font=font_small)
+        draw.text((left_margin, 130), "calendar URL in", fill=COLOR_GRAY, font=font_small)
+        draw.text((left_margin, 150), "the script config", fill=COLOR_GRAY, font=font_small)
         return image
     
     if not calendar_events:
-        draw.text((10, 50), "No upcoming", fill=COLOR_WHITE, font=font_medium)
-        draw.text((10, 75), "events", fill=COLOR_WHITE, font=font_medium)
+        draw.text((left_margin, 50), "No upcoming", fill=COLOR_WHITE, font=font_medium)
+        draw.text((left_margin, 75), "events", fill=COLOR_WHITE, font=font_medium)
         
         # Show current date
         date_text = now.strftime('%B %d, %Y')
-        draw.text((10, 120), date_text, fill=COLOR_GRAY, font=font_small)
+        draw.text((left_margin, 120), date_text, fill=COLOR_GRAY, font=font_small)
         return image
     
-    # Display upcoming events
+    # Display upcoming events with margins
     y_offset = 40
+    
     for i, event in enumerate(calendar_events[:4]):  # Show max 4 events
         if y_offset > 240:
             break
@@ -372,23 +377,24 @@ def draw_view_calendar(disp, font_large, font_medium, font_small):
         # Time
         time_str = event_date.strftime('%I:%M %p')
         
-        # Draw event
-        draw.text((10, y_offset), date_str, fill=date_color, font=font_small)
-        draw.text((80, y_offset), time_str, fill=COLOR_GRAY, font=font_small)
+        # Draw date and time on same line
+        draw.text((left_margin, y_offset), date_str, fill=date_color, font=font_small)
+        draw.text((left_margin + 75, y_offset), time_str, fill=COLOR_GRAY, font=font_small)
         
         y_offset += 18
         
         # Event title (truncate if too long)
         title = event['summary']
-        if len(title) > 25:
-            title = title[:22] + "..."
-        draw.text((10, y_offset), title, fill=COLOR_WHITE, font=font_small)
+        max_width = disp.width - left_margin - right_margin
+        if len(title) > 28:
+            title = title[:25] + "..."
+        draw.text((left_margin, y_offset), title, fill=COLOR_WHITE, font=font_small)
         
         y_offset += 25
         
-        # Separator line
+        # Separator line with margins
         if i < len(calendar_events) - 1:
-            draw.line([(10, y_offset), (230, y_offset)], fill=COLOR_GRAY, width=1)
+            draw.line([(left_margin, y_offset), (disp.width - right_margin, y_offset)], fill=COLOR_GRAY, width=1)
             y_offset += 10
     
     return image
