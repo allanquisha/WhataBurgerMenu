@@ -32,7 +32,7 @@ UNITS = "metric"
 # 4. Replace 'webcal://' with 'https://'
 APPLE_CALENDAR_URL = "https://p171-caldav.icloud.com/published/2/MTc5MjIyNjU0MDExNzkyMj6S-vwMDPtCaeXhpF930ZOQhgsgMGIUHZLw0S9J0j3cwSh38Ec0EgVsJh8jstmZg1Y-6skH-eoS3sjY91ZUrDE"
 
-UPDATE_INTERVAL = 300  # Update weather/calendar every 5 minutes
+UPDATE_INTERVAL = 60  # Update weather/calendar every 60 seconds
 VIEW_CYCLE_TIME = 10  # Seconds to show each view before cycling
 
 # Display dimensions
