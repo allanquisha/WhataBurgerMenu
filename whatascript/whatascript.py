@@ -21,7 +21,10 @@ logging.basicConfig(level = logging.INFO)
 
 # --- Configuration ---
 WEATHER_API_KEY = "9442039f6bf3a3f641153f7ce2ed46e4"
-CITY_ID = "4466033"  # Change to your city ID
+
+# Location settings
+USE_AUTO_LOCATION = True  # Set to False to use CITY_ID instead
+CITY_ID = "4466033"  # Fallback city ID if auto-location fails
 UNITS = "metric"
 
 # Apple Calendar Configuration
@@ -61,6 +64,34 @@ weather_data = None
 calendar_events = []
 current_view = VIEW_TIME
 last_data_update = 0
+current_location = None
+
+# ============================================================
+#  Location Functions
+# ============================================================
+def get_location():
+    """Get current location using IP geolocation"""
+    global current_location
+    try:
+        # Use ipapi.co for free IP geolocation
+        response = requests.get('https://ipapi.co/json/', timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            current_location = {
+                'city': data.get('city', 'Unknown'),
+                'region': data.get('region', ''),
+                'country': data.get('country_name', ''),
+                'lat': data.get('latitude'),
+                'lon': data.get('longitude')
+            }
+            logging.info(f"Location detected: {current_location['city']}, {current_location['region']}")
+            return current_location
+        else:
+            logging.warning("Could not detect location, using fallback city ID")
+            return None
+    except Exception as e:
+        logging.error(f"Location detection error: {e}")
+        return None
 
 # ============================================================
 #  Weather Fetch Function
@@ -68,7 +99,18 @@ last_data_update = 0
 def get_weather_data():
     """Fetch weather data from OpenWeatherMap API"""
     try:
-        url = f"https://api.openweathermap.org/data/2.5/weather?id={CITY_ID}&units={UNITS}&appid={WEATHER_API_KEY}"
+        # Build URL based on location method
+        if USE_AUTO_LOCATION and current_location and current_location.get('lat') and current_location.get('lon'):
+            # Use coordinates for location-based weather
+            lat = current_location['lat']
+            lon = current_location['lon']
+            url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units={UNITS}&appid={WEATHER_API_KEY}"
+            logging.info(f"Fetching weather for {current_location['city']}")
+        else:
+            # Fallback to city ID
+            url = f"https://api.openweathermap.org/data/2.5/weather?id={CITY_ID}&units={UNITS}&appid={WEATHER_API_KEY}"
+            logging.info(f"Fetching weather using city ID")
+        
         response = requests.get(url, timeout=10)
         
         if response.status_code != 200:
@@ -386,10 +428,15 @@ def draw_view_calendar(disp, font_large, font_medium, font_small):
         # Event title (truncate if too long)
         title = event['summary']
         max_width = disp.width - left_margin - right_margin
-        if len(title) > 28:
-            title = title[:25] + "..."
-        draw.text((left_margin, y_offset), title, fill=COLOR_WHITE, font=font_small)
+        # Initial data fetch
+        logging.info("Fetching initial data...")
         
+        # Get location first if auto-location is enabled
+        if USE_AUTO_LOCATION:
+            get_location()
+        
+        weather_data = get_weather_data()
+        calendar_events = get_calendar_events()
         y_offset += 25
         
         # Separator line with margins
