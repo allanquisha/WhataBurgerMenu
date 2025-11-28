@@ -56,12 +56,83 @@ Edit `whatascript.py` to configure:
 
 ## Running
 
+### Option 1: Run Manually
 ```bash
 cd ~/WhataBurgerMenu/whatascript
 sudo python3 whatascript.py
 ```
 
 Press `Ctrl+C` to exit.
+
+### Option 2: Run as Service (Auto-Start on Boot)
+
+**Install the service:**
+```bash
+cd ~/WhataBurgerMenu/whatascript
+sudo cp whataburger-display.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable whataburger-display.service
+sudo systemctl start whataburger-display.service
+```
+
+**Check status:**
+```bash
+sudo systemctl status whataburger-display.service
+```
+
+Expected output when running successfully:
+```
+● whataburger-display.service - WhataBurger Menu Display
+     Loaded: loaded (/etc/systemd/system/whataburger-display.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2025-11-27 23:16:00 CST; 5s ago
+   Main PID: 4322 (python3)
+      Tasks: 4 (limit: 751)
+        CPU: 1.926s
+     CGroup: /system.slice/whataburger-display.service
+             └─4322 /usr/bin/python3 /home/admin/WhataBurgerMenu/whatascript/whatascript.py
+
+Nov 27 23:16:02 rasp3b-whata python3[4322]: INFO:root:Display started successfully!
+Nov 27 23:16:02 rasp3b-whata python3[4322]: INFO:root:==================================================
+Nov 27 23:16:02 rasp3b-whata python3[4322]: INFO:root:Views will cycle automatically every 10 seconds
+Nov 27 23:16:02 rasp3b-whata python3[4322]: INFO:root:View 1: Time & Date
+Nov 27 23:16:02 rasp3b-whata python3[4322]: INFO:root:View 2: Weather
+Nov 27 23:16:02 rasp3b-whata python3[4322]: INFO:root:View 3: Calendar Events
+Nov 27 23:16:02 rasp3b-whata python3[4322]: INFO:root:Press Ctrl+C to exit
+Nov 27 23:16:02 rasp3b-whata python3[4322]: INFO:root:==================================================
+```
+
+**Status Indicators:**
+- ✅ **Loaded**: Service is installed
+- ✅ **Active (running)**: Currently running
+- ✅ **Enabled**: Will start automatically on boot
+
+**Service Management Commands:**
+```bash
+# Stop the service
+sudo systemctl stop whataburger-display.service
+
+# Restart the service
+sudo systemctl restart whataburger-display.service
+
+# View live logs
+sudo journalctl -u whataburger-display.service -f
+
+# Disable auto-start
+sudo systemctl disable whataburger-display.service
+
+# Re-enable auto-start
+sudo systemctl enable whataburger-display.service
+```
+
+## Features
+
+The display automatically:
+- ✅ Starts on boot when installed as a service
+- ✅ Cycles through time, weather, and calendar views every 10 seconds
+- ✅ Updates weather and calendar data every 60 seconds
+- ✅ Centers all text with proper margins to prevent edge cutoff
+- ✅ Shows temperatures in both Fahrenheit and Celsius
+- ✅ Auto-restarts if it crashes (when running as service)
 
 ## Project Structure
 
