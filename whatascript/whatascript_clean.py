@@ -5,6 +5,7 @@ import sys
 import time
 import logging
 import spidev as SPI
+sys.path.append("..")
 from lib import LCD_1inch69
 from PIL import Image, ImageDraw, ImageFont
 import requests
@@ -344,12 +345,11 @@ def main():
         disp.Init()
         disp.clear()
         disp.bl_DutyCycle(50)
+        
         # Load fonts
         try:
-            font_path = os.path.join(os.path.dirname(__file__), 'Font/Font01.ttf')
-            font_large = ImageFont.truetype(font_path, 40)
-            font_medium = ImageFont.truetype(font_path, 22)
-            font_small = ImageFont.truetype(font_path, 16))
+            font_large = ImageFont.truetype("../Font/Font01.ttf", 40)
+            font_medium = ImageFont.truetype("../Font/Font01.ttf", 22)
             font_small = ImageFont.truetype("../Font/Font01.ttf", 16)
         except:
             logging.warning("Could not load custom fonts, using default")
