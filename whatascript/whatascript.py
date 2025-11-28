@@ -178,35 +178,54 @@ def draw_view_time(disp, font_large, font_medium, font_small):
     now = datetime.now()
     
     # Header
-    draw.text((10, 10), "TIME & DATE", fill=COLOR_GRAY, font=font_small)
+    header_text = "TIME & DATE"
+    bbox = draw.textbbox((0, 0), header_text, font=font_small)
+    header_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - header_width) // 2, 10), header_text, fill=COLOR_GRAY, font=font_small)
     
     # Day of week
     day_text = now.strftime('%A')
-    draw.text((10, 40), day_text, fill=COLOR_ORANGE, font=font_large)
+    bbox = draw.textbbox((0, 0), day_text, font=font_large)
+    day_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - day_width) // 2, 40), day_text, fill=COLOR_ORANGE, font=font_large)
     
     # Date
     date_text = now.strftime('%B %d, %Y')
-    draw.text((10, 80), date_text, fill=COLOR_WHITE, font=font_medium)
+    bbox = draw.textbbox((0, 0), date_text, font=font_medium)
+    date_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - date_width) // 2, 80), date_text, fill=COLOR_WHITE, font=font_medium)
     
     # Time - Large display
     time_text = now.strftime('%I:%M')
-    draw.text((10, 130), time_text, fill=COLOR_ORANGE, font=font_large)
+    bbox = draw.textbbox((0, 0), time_text, font=font_large)
+    time_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - time_width) // 2, 130), time_text, fill=COLOR_ORANGE, font=font_large)
     
     # Seconds
     sec_text = now.strftime('%S')
-    draw.text((10, 175), sec_text, fill=COLOR_GRAY, font=font_medium)
+    bbox = draw.textbbox((0, 0), sec_text, font=font_medium)
+    sec_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - sec_width) // 2, 175), sec_text, fill=COLOR_GRAY, font=font_medium)
     
     # AM/PM
     ampm_text = now.strftime('%p')
-    draw.text((10, 200), ampm_text, fill=COLOR_WHITE, font=font_medium)
+    bbox = draw.textbbox((0, 0), ampm_text, font=font_medium)
+    ampm_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - ampm_width) // 2, 200), ampm_text, fill=COLOR_WHITE, font=font_medium)
     
     # Mini weather preview if available
     if weather_data:
         temp_c = weather_data['temp']
         temp_f = temp_c * 9/5 + 32
         temp_text = f"{temp_f:.0f}°F / {temp_c:.0f}°C"
-        draw.text((10, 240), temp_text, fill=COLOR_LIGHT_BLUE, font=font_small)
-        draw.text((10, 260), weather_data['condition'], fill=COLOR_LIGHT_BLUE, font=font_small)
+        bbox = draw.textbbox((0, 0), temp_text, font=font_small)
+        temp_width = bbox[2] - bbox[0]
+        draw.text(((disp.width - temp_width) // 2, 240), temp_text, fill=COLOR_LIGHT_BLUE, font=font_small)
+        
+        cond_text = weather_data['condition']
+        bbox = draw.textbbox((0, 0), cond_text, font=font_small)
+        cond_width = bbox[2] - bbox[0]
+        draw.text(((disp.width - cond_width) // 2, 260), cond_text, fill=COLOR_LIGHT_BLUE, font=font_small)
     
     return image
 
@@ -219,54 +238,87 @@ def draw_view_weather(disp, font_large, font_medium, font_small):
     draw = ImageDraw.Draw(image)
     
     # Header
-    draw.text((10, 10), "WEATHER", fill=COLOR_GRAY, font=font_small)
+    header_text = "WEATHER"
+    bbox = draw.textbbox((0, 0), header_text, font=font_small)
+    header_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - header_width) // 2, 10), header_text, fill=COLOR_GRAY, font=font_small)
     
     if weather_data is None:
-        draw.text((10, 60), "No weather data", fill=COLOR_RED, font=font_medium)
-        draw.text((10, 90), "Check API key", fill=COLOR_RED, font=font_small)
-        draw.text((10, 110), "and connection", fill=COLOR_RED, font=font_small)
+        error_text = "No weather data"
+        bbox = draw.textbbox((0, 0), error_text, font=font_medium)
+        error_width = bbox[2] - bbox[0]
+        draw.text(((disp.width - error_width) // 2, 60), error_text, fill=COLOR_RED, font=font_medium)
+        
+        check_text = "Check API key"
+        bbox = draw.textbbox((0, 0), check_text, font=font_small)
+        check_width = bbox[2] - bbox[0]
+        draw.text(((disp.width - check_width) // 2, 90), check_text, fill=COLOR_RED, font=font_small)
+        
+        conn_text = "and connection"
+        bbox = draw.textbbox((0, 0), conn_text, font=font_small)
+        conn_width = bbox[2] - bbox[0]
+        draw.text(((disp.width - conn_width) // 2, 110), conn_text, fill=COLOR_RED, font=font_small)
         return image
     
     # Temperature - Large (show both F and C)
     temp_c = weather_data['temp']
     temp_f = temp_c * 9/5 + 32
     temp_text = f"{temp_f:.0f}°F"
-    draw.text((10, 40), temp_text, fill=COLOR_ORANGE, font=font_large)
+    bbox = draw.textbbox((0, 0), temp_text, font=font_large)
+    temp_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - temp_width) // 2, 40), temp_text, fill=COLOR_ORANGE, font=font_large)
     
     # Celsius below
     temp_c_text = f"{temp_c:.0f}°C"
-    draw.text((10, 85), temp_c_text, fill=COLOR_GRAY, font=font_medium)
+    bbox = draw.textbbox((0, 0), temp_c_text, font=font_medium)
+    tempc_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - tempc_width) // 2, 85), temp_c_text, fill=COLOR_GRAY, font=font_medium)
     
     # Condition
     condition_text = weather_data['condition']
-    draw.text((10, 115), condition_text, fill=COLOR_WHITE, font=font_medium)
+    bbox = draw.textbbox((0, 0), condition_text, font=font_medium)
+    cond_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - cond_width) // 2, 115), condition_text, fill=COLOR_WHITE, font=font_medium)
     
     # Description
     desc_text = weather_data['description'].title()
-    draw.text((10, 145), desc_text, fill=COLOR_GRAY, font=font_small)
+    bbox = draw.textbbox((0, 0), desc_text, font=font_small)
+    desc_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - desc_width) // 2, 145), desc_text, fill=COLOR_GRAY, font=font_small)
     
     # Details box
     y_offset = 180
-    draw.text((10, y_offset), "Details:", fill=COLOR_LIGHT_BLUE, font=font_small)
+    details_text = "Details:"
+    bbox = draw.textbbox((0, 0), details_text, font=font_small)
+    details_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - details_width) // 2, y_offset), details_text, fill=COLOR_LIGHT_BLUE, font=font_small)
     
     y_offset += 25
     feels_c = weather_data['feels_like']
     feels_f = feels_c * 9/5 + 32
     feels_text = f"Feels: {feels_f:.0f}°F / {feels_c:.0f}°C"
-    draw.text((10, y_offset), feels_text, fill=COLOR_WHITE, font=font_small)
+    bbox = draw.textbbox((0, 0), feels_text, font=font_small)
+    feels_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - feels_width) // 2, y_offset), feels_text, fill=COLOR_WHITE, font=font_small)
     
     y_offset += 20
     humid_text = f"Humidity: {weather_data['humidity']}%"
-    draw.text((10, y_offset), humid_text, fill=COLOR_WHITE, font=font_small)
+    bbox = draw.textbbox((0, 0), humid_text, font=font_small)
+    humid_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - humid_width) // 2, y_offset), humid_text, fill=COLOR_WHITE, font=font_small)
     
     y_offset += 20
     wind_text = f"Wind: {weather_data['wind_speed']:.1f} m/s"
-    draw.text((10, y_offset), wind_text, fill=COLOR_WHITE, font=font_small)
+    bbox = draw.textbbox((0, 0), wind_text, font=font_small)
+    wind_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - wind_width) // 2, y_offset), wind_text, fill=COLOR_WHITE, font=font_small)
     
     # Update time
     now = datetime.now()
     time_text = f"Updated: {now.strftime('%I:%M %p')}"
-    draw.text((10, 250), time_text, fill=COLOR_GRAY, font=font_small)
+    bbox = draw.textbbox((0, 0), time_text, font=font_small)
+    time_width = bbox[2] - bbox[0]
+    draw.text(((disp.width - time_width) // 2, 250), time_text, fill=COLOR_GRAY, font=font_small)
     
     return image
 
