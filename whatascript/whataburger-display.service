@@ -1,0 +1,14 @@
+[Unit]
+Description=WhataBurger Menu Display
+After=network.target
+
+[Service]
+Type=simple
+User=admin
+WorkingDirectory=/home/admin/WhataBurgerMenu/whatascript
+ExecStart=/usr/bin/python3 /home/admin/WhataBurgerMenu/whatascript/whatascript.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
